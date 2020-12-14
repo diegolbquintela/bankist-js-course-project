@@ -59,6 +59,8 @@ const inputLoanAmount = document.querySelector(".form_input--loan-amount");
 const inputCloseUsername = document.querySelector(".form_input--user");
 const inputCloserPin = document.querySelector(".form_input--pin");
 
+///////////////////////////////
+// Adding the movement functionality to the app
 const displayMovements = function (movements) {
   // Delete initial container
   containerMovements.innerHTML = "";
@@ -73,7 +75,7 @@ const displayMovements = function (movements) {
           <div class="movements_type movements_type--${typeMovement}">${
       i + 1
     } ${typeMovement}</div>
-          <div class="movements_value">${mov}</div>
+          <div class="movements_value">${mov}€</div>
         </div>
     `;
 
@@ -82,10 +84,9 @@ const displayMovements = function (movements) {
   });
 };
 
-displayMovements(account1.movements);
+// const user = "Steven Thomas Williams"; //stw
 
-const user = "Steven Thomas Williams"; //stw
-
+////////////////////////////////////
 //converting name to username (initials)
 
 // 1) Function Create User Names
@@ -104,6 +105,7 @@ const createUserNames = (user) =>
 createUserNames(accounts);
 // console.log(accounts);
 
+///////////////////////////////////
 // Calculating account balance
 // Setting a reduce function to accumulate the account balance
 const calcPrintBalance = (movements) =>
@@ -112,40 +114,80 @@ const calcPrintBalance = (movements) =>
 calcPrintBalance(account1.movements);
 
 // Adding the account balance to the application
-const updateBalance = (account) =>
-  (labelBalance.textContent = `${calcPrintBalance(account)} EUR`);
-
-updateBalance(account1.movements);
+const displayBalance = (account) =>
+  (labelBalance.textContent = `${calcPrintBalance(account)}€`);
 
 // Total Deposits
 const calcDisplaySummary = (movements) =>
   movements.filter((mov) => mov > 0).reduce((acc, cur) => acc + cur, 0);
 // Updating Total Deposits in the app
 const totalInDisplay = (account) =>
-  (labelSumIn.textContent = calcDisplaySummary(account.movements));
-totalInDisplay(account1);
+  (labelSumIn.textContent = calcDisplaySummary(account.movements) + "€");
 
 // Total Withdrawal
 const calcDisplayWithdrawal = (movements) =>
   movements.filter((mov) => mov < 0).reduce((acc, cur) => acc + cur, 0);
 // Updating info in the app
 const totalOutDisplay = (account) =>
-  (labelSumOut.textContent = Math.abs(
-    calcDisplayWithdrawal(account.movements)
-  )) + "€";
-totalOutDisplay(account1);
+  (labelSumOut.textContent =
+    Math.abs(calcDisplayWithdrawal(account.movements)) + "€");
 
 // Total Interests
-const interest = (movements) =>
-  movements
+const interest = (account) =>
+  account.movements
     .filter((mov) => mov > 0)
-    .map((deposit) => (deposit * 1.2) / 100)
+    .map((deposit) => (deposit * account.interestRate) / 100)
     .filter((mov) => mov >= 1)
     .reduce((acc, cur) => acc + cur, 0);
 // Updating the app
 const interestDisplay = (account) =>
-  (labelSumInterest.textContent = interest(account.movements)) + "€";
-interestDisplay(account1);
+  (labelSumInterest.textContent = interest(account) + "€");
+
+///////////////////////////////////
+// LOGIN
+// Event Handler
+let currentAccount;
+
+//form auto refreshes page, so we add preventDefault.
+btnLogin.addEventListener("click", (event) => {
+  // prevent form from submitting
+  event.preventDefault();
+
+  // get valued typed by user
+  currentAccount = accounts.find(
+    (acc) => acc.username === inputLoginUsername.value
+  );
+
+  // check if the pin for the user is the same registered
+  // using optional chaining to check if the account exists
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+    // Display UI and welcome message
+    labelWelcome.textContent = `Welcome back, ${
+      currentAccount.owner.split(" ")[0]
+    }`;
+
+    containerApp.style.opacity = 100;
+
+    // Clear input fields
+    inputLoginUsername.value = inputLoginPin.value = "";
+    inputLoginPin.blur(); //field loses the focus
+
+    //works because the assignment operator works from right to left
+
+    // Display Movements
+    displayMovements(currentAccount.movements);
+
+    // Display Balance
+    displayBalance(currentAccount.movements);
+
+    //Display Summary
+    totalInDisplay(currentAccount);
+    totalOutDisplay(currentAccount);
+    interestDisplay(currentAccount);
+
+    console.log(true);
+  }
+});
 
 // // PIPELINE
 // console.log(movements);
@@ -185,7 +227,9 @@ const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
 // FIND METHOD
 
-console.log(movements.find((mov) => mov < 0));
+// console.log(movements.find((mov) => mov < 0));
 
-const account = accounts.find((acc) => acc.owner === "Jessica Davis");
-console.log(account);
+// const account = accounts.find((acc) => acc.owner === "Jessica Davis");
+// console.log(account);
+
+////////////
