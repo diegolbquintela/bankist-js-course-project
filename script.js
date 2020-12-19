@@ -79,7 +79,7 @@ const displayMovements = function (movements, sort = false) {
           <div class="movements_type movements_type--${typeMovement}">${
       i + 1
     } ${typeMovement}</div>
-          <div class="movements_value">${mov}€</div>
+          <div class="movements_value">${mov.toFixed(2)}€</div>
         </div>
     `;
 
@@ -131,7 +131,7 @@ const calcPrintBalance = (acc) =>
 
 // Implementing the account balance to the application
 const displayBalance = (acc) => {
-  labelBalance.textContent = calcPrintBalance(acc) + "€";
+  labelBalance.textContent = calcPrintBalance(acc).toFixed(2) + "€";
 };
 
 // Total Deposits
@@ -139,7 +139,8 @@ const calcDisplaySummary = (movements) =>
   movements.filter((mov) => mov > 0).reduce((acc, cur) => acc + cur, 0);
 // Updating Total Deposits in the app
 const totalInDisplay = (account) =>
-  (labelSumIn.textContent = calcDisplaySummary(account.movements) + "€");
+  (labelSumIn.textContent =
+    calcDisplaySummary(account.movements).toFixed(2) + "€");
 
 // Total Withdrawal
 const calcDisplayWithdrawal = (movements) =>
@@ -148,7 +149,7 @@ const calcDisplayWithdrawal = (movements) =>
 
 const totalOutDisplay = (account) =>
   (labelSumOut.textContent =
-    Math.abs(calcDisplayWithdrawal(account.movements)) + "€");
+    Math.abs(calcDisplayWithdrawal(account.movements)).toFixed(2) + "€");
 
 // Total Interests
 const interest = (account) =>
@@ -159,7 +160,7 @@ const interest = (account) =>
     .reduce((acc, cur) => acc + cur, 0);
 // Updating the app
 const interestDisplay = (account) =>
-  (labelSumInterest.textContent = interest(account) + "€");
+  (labelSumInterest.textContent = interest(account).toFixed(2) + "€");
 
 ///////////////////////////////////
 // LOGIN
@@ -226,7 +227,7 @@ btnTransfer.addEventListener("click", (e) => {
 btnLoan.addEventListener("click", (e) => {
   e.preventDefault();
 
-  const amount = Number(inputLoanAmount.value);
+  const amount = Math.floor(inputLoanAmount.value);
 
   if (
     amount > 0 &&
