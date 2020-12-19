@@ -5,7 +5,7 @@
 // Data
 const account1 = {
   owner: "Jonas Schmedtmann",
-  movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
+  movements: [200, 450, -400, 3000, -650, -130, 70, 1350],
   interestRate: 1.2, // %
   pin: 1111,
 };
@@ -451,4 +451,4 @@ function filter_list(l) {
   return array;
 }
 
-console.log(filter_list([1, 2, "a", "b"]));
+// console.log(filter_list([1, 2, "a", "b"]));
